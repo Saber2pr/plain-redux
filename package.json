@@ -1,6 +1,6 @@
 {
   "name": "@saber2pr/plain-redux",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "plain redux.",
   "repository": {
     "type": "git",
@@ -18,14 +18,12 @@
     "start": "tsc --watch"
   },
   "devDependencies": {
-    "typescript": "^3.4.3"
-  },
-  "peerDependencies": {
     "@types/react": "^17.0.0",
     "@types/react-redux": "^7.1.16",
     "@types/redux": "^3.6.0",
     "react": "^17.0.1",
     "react-redux": "^7.2.2",
-    "redux": "^4.0.5"
+    "redux": "^4.0.5",
+    "typescript": "^3.4.3"
   }
 }
