@@ -2,6 +2,10 @@ import { Reducer, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createStore as createReduxStore, PreloadedState } from 'redux';
 
+/**
+ * state manager for next.js
+ * @see https://github.com/Saber2pr/plain-redux.git
+ */
 export const createPlainRedux = <State>(
   initialState: PreloadedState<State>
 ) => {
@@ -41,6 +45,14 @@ export const createPlainRedux = <State>(
     return _store
   }
 
+  /**
+   * init page store
+   * for example:
+   * ```tsx
+   * const store = useStore(AppProps?.pageProps?.initialReduxState)
+   * <Provider store={store}>
+   * ```
+   */
   function useStore(initialState: PreloadedState<State>) {
     const store = useMemo(() => initializeStore(initialState), [initialState])
     return store
@@ -55,18 +67,12 @@ export const createPlainRedux = <State>(
       dispatch<Action<T>>({ type, payload })
   }
 
-  type PagePropsOptions = {
-    initialReduxState: Partial<State>
-  }
-
-  const props = <PageProps>(pageProps: PageProps & PagePropsOptions) => {
-    for (const key in pageProps) {
-      if (pageProps[key] === null || pageProps[key] === undefined) {
-        delete pageProps[key]
-      }
-    }
-    return pageProps
-  }
+  /**
+   * Partial Redux State [initialReduxState]
+   */
+  const initState = (pageProps: Partial<State>) => ({
+    initialReduxState: pageProps
+  })
 
   type FetchOptions<T extends keyof State> = {
     type: T,
@@ -76,6 +82,7 @@ export const createPlainRedux = <State>(
     onError?(error: any): Function
     autoLoad?: boolean
   }
+
   const useFetchState = <T extends keyof State = keyof State>({
     type,
     equalityFn,
@@ -112,7 +119,7 @@ export const createPlainRedux = <State>(
     useStore,
     useSelectState,
     useDispatchState,
-    props,
+    initState,
     useFetchState
   }
 }
