@@ -1,4 +1,4 @@
-import { Reducer, useMemo } from 'react';
+import { Reducer, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createStore as createReduxStore, PreloadedState } from 'redux';
 
@@ -46,8 +46,8 @@ export const createPlainRedux = <State>(
     return store
   }
 
-  const useSelectState = <T extends keyof State = keyof State>(type: T) =>
-    useSelector<State, State[T]>(state => state[type])
+  const useSelectState = <T extends keyof State = keyof State>(type: T, equalityFn?: (left: State[T], right: State[T]) => boolean) =>
+    useSelector<State, State[T]>(state => state[type], equalityFn)
 
   const useDispatchState = () => {
     const dispatch = useDispatch()
@@ -68,11 +68,51 @@ export const createPlainRedux = <State>(
     return pageProps
   }
 
+  type FetchOptions<T extends keyof State> = {
+    type: T,
+    request: () => Promise<State[T]>
+    initData?: State[T]
+    equalityFn?: (left: State[T], right: State[T]) => boolean,
+    onError?(error: any): Function
+    autoLoad?: boolean
+  }
+  const useFetchState = <T extends keyof State = keyof State>({
+    type,
+    equalityFn,
+    request,
+    initData = null,
+    autoLoad = true,
+    onError,
+  }: FetchOptions<T>): [State[T], boolean, () => Promise<void>] => {
+    const payload = useSelectState(type, equalityFn) ?? initData
+    const dispatch = useDispatchState()
+    const [loading, setLoading] = useState(false)
+
+    const fetchData = async () => {
+      try {
+        setLoading(true)
+        dispatch(type, await request())
+      } catch (error) {
+        console.log(error)
+        onError && onError(error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    useEffect(() => {
+      autoLoad && fetchData()
+    }, [autoLoad])
+
+    return [payload, loading, fetchData]
+  }
+
   return {
     store,
     useStore,
     useSelectState,
     useDispatchState,
-    props
+    props,
+    useFetchState
   }
 }
