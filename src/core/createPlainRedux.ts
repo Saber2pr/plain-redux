@@ -55,10 +55,24 @@ export const createPlainRedux = <State>(
       dispatch<Action<T>>({ type, payload })
   }
 
+  type PagePropsOptions = {
+    initialReduxState: Partial<State>
+  }
+
+  const props = <PageProps>(pageProps: PageProps & PagePropsOptions) => {
+    for (const key in pageProps) {
+      if (pageProps[key] === null || pageProps[key] === undefined) {
+        delete pageProps[key]
+      }
+    }
+    return pageProps
+  }
+
   return {
     store,
     useStore,
     useSelectState,
     useDispatchState,
+    props
   }
 }

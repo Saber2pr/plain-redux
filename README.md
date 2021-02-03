@@ -14,6 +14,7 @@ const {
   useDispatchState,
   useSelectState,
   store,
+  props
 } = createPlainRedux({
   show: false
 })
