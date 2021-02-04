@@ -79,7 +79,7 @@ export const createPlainRedux = <State>(
     request: () => Promise<State[T]>
     initData?: State[T]
     equalityFn?: (left: State[T], right: State[T]) => boolean,
-    onError?(error: any): Function
+    onError?(error: any): any
     autoLoad?: boolean
   }
 
