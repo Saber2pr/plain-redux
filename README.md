@@ -10,11 +10,11 @@ yarn add @saber2pr/plain-redux
 import createPlainRedux from '@saber2pr/plain-redux'
 
 const {
-  useStore,
-  useDispatchState,
-  useSelectState,
   store,
-  props,
+  useStore,
+  useSelectState,
+  useDispatchState,
+  initState,
   useFetchState
 } = createPlainRedux({
   show: false
