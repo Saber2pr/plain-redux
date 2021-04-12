@@ -45,6 +45,8 @@ export const createPlainRedux = <State>(
     return _store
   }
 
+  const getStore = () => store
+
   /**
    * init page store
    * for example:
@@ -115,7 +117,7 @@ export const createPlainRedux = <State>(
   }
 
   return {
-    store,
+    getStore,
     useStore,
     useSelectState,
     useDispatchState,
